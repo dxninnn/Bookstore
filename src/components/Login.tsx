@@ -3,40 +3,116 @@ import { motion } from 'framer-motion';
 import { Mail, Lock, Eye, EyeOff } from 'lucide-react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
+import { supabase } from '../utils/supabaseClient';
 
 export const Login: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
   const location = useLocation();
   const login = useAuthStore((state) => state.login);
+  const [signUpEmail, setSignUpEmail] = useState('');
+  const [signUpPassword, setSignUpPassword] = useState('');
+  const [showSignUpPassword, setShowSignUpPassword] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSignInWithGoogle = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    setError('');
+
+    try {
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+      });
+
+      if (error) {
+        setError(error.message);
+        return;
+      }
+
+      // Simulate login
+      login(email);
+
+      // If coming from cart, redirect back to cart
+      if (location.state?.from === '/cart') {
+        navigate('/cart');
+      } else {
+        navigate('/');
+      }
+    } catch (err: any) {
+      setError(err.message);
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: email,
+        password: password,
+      });
+
+      if (error) {
+        setError(error.message);
+        return;
+      }
+
+      // Simulate login
+      login(email);
+
+      // If coming from cart, redirect back to cart
+      if (location.state?.from === '/cart') {
+        navigate('/cart');
+      } else {
+        navigate('/');
+      }
+    } catch (err: any) {
+      setError(err.message);
+    }
+  };
+
+  const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
 
     // Simple validation
-    if (!email || !password) {
+    if (!signUpEmail || !signUpPassword) {
       setError('Please fill in all fields');
       return;
     }
 
     // Simple email validation
-    if (!/\S+@\S+\.\S+/.test(email)) {
+    if (!/\S+@\S+\.\S+/.test(signUpEmail)) {
       setError('Please enter a valid email address');
       return;
     }
 
-    // Simulate login
-    login(email);
-    
-    // If coming from cart, redirect back to cart
-    if (location.state?.from === '/cart') {
-      navigate('/cart');
-    } else {
-      navigate('/');
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email: signUpEmail,
+        password: signUpPassword,
+      });
+
+      if (error) {
+        setError(error.message);
+        return;
+      }
+
+      // Simulate login
+      login(signUpEmail);
+
+      // If coming from cart, redirect back to cart
+      if (location.state?.from === '/cart') {
+        navigate('/cart');
+      } else {
+        navigate('/');
+      }
+    } catch (err: any) {
+      setError(err.message);
     }
   };
 
@@ -103,17 +179,6 @@ export const Login: React.FC = () => {
                   className="appearance-none relative block w-full px-10 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-primary-500 focus:border-primary-500 focus:z-10 sm:text-sm"
                   placeholder="Password"
                 />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center"
-                >
-                  {showPassword ? (
-                    <EyeOff className="h-5 w-5 text-gray-400" />
-                  ) : (
-                    <Eye className="h-5 w-5 text-gray-400" />
-                  )}
-                </button>
               </div>
             </div>
           </div>
@@ -147,6 +212,14 @@ export const Login: React.FC = () => {
             </button>
           </div>
         </form>
+        <div className="mt-6 text-center">
+          <p className="text-sm text-gray-600">
+            Don't have an account?{' '}
+            <Link to="/signup" className="font-medium text-primary-600 hover:text-primary-500">
+              Sign up
+            </Link>
+          </p>
+        </div>
       </motion.div>
     </div>
   );

@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { supabase } from '../utils/supabaseClient';
 
 export interface CartItem {
   id: string;
@@ -23,23 +24,45 @@ interface CartStore {
 
 export const useCartStore = create<CartStore>((set, get) => ({
   items: [],
- addItem: (item) => {
-    set((state) => {
-      console.log('Item being added:', item);
-      const existingItem = state.items.find((i) => i.id === item.id);
-      if (existingItem) {
-        return {
-          items: state.items.map((i) =>
-            i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i
-          ),
-        };
+  addItem: (item) => {
+    supabase.auth.getSession().then(({ data: { session }, error }) => {
+      if (error) {
+        console.error('Error getting session:', error);
+        return;
       }
-      return { items: [...state.items, { ...item, quantity: 1 }].map(item => ({...item})) };
+
+      const userId = session?.user.id;
+      if (!userId) {
+        console.error('User not authenticated');
+        return;
+      }
+
+      supabase
+        .from('cart')
+        .insert([{ user_id: userId, product_id: item.id, quantity: 1 }])
+        .then(({ error }) => {
+          if (error) {
+            console.error('Error adding item to cart:', error);
+          } else {
+            set((state) => {
+              console.log('Item being added:', item);
+              const existingItem = state.items.find((i) => i.id === item.id);
+              if (existingItem) {
+                return {
+                  items: state.items.map((i) =>
+                    i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i
+                  ),
+                };
+              }
+              return { items: [...state.items, JSON.parse(JSON.stringify({ ...item, quantity: 1 }))] };
+            });
+          }
+        });
     });
   },
   removeItem: (id) => {
     set((state) => ({
-      items: state.items.filter((item) => item.id !== id).map(item => ({...item})),
+      items: state.items.filter((item) => item.id !== id),
     }));
   },
   updateQuantity: (id, quantity) => {
@@ -49,8 +72,8 @@ export const useCartStore = create<CartStore>((set, get) => ({
     }
     set((state) => ({
       items: state.items.map((item) =>
-        item.id === id ? { ...item, quantity } : item
-      ).map(item => ({...item})),
+        item.id === id ? JSON.parse(JSON.stringify({ ...item, quantity })) : item
+      ),
     }));
   },
   clearCart: () => set({ items: [] }),
@@ -62,6 +85,10 @@ export const useCartStore = create<CartStore>((set, get) => ({
         console.log('Price without currency:', priceWithoutCurrency);
         const numericPrice = parseFloat(priceWithoutCurrency);
         console.log('Numeric price:', numericPrice);
+        if (isNaN(numericPrice)) {
+          console.error('Invalid price:', item.price);
+          return sum;
+        }
         return sum + (numericPrice * item.quantity);
       },
       0

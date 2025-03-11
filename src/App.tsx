@@ -6,6 +6,7 @@ import { Navigation } from './components/Navigation';
 import { BookDetails } from './components/BookDetails';
 import { Cart } from './components/Cart';
 import { Login } from './components/Login';
+import { Signup } from './components/Signup';
 import { CheckoutSuccess } from './components/CheckoutSuccess';
 import { Profile } from './components/Profile';
 import { useCartStore } from './store/cartStore';
@@ -155,8 +156,9 @@ function App() {
         <Route path="/book/:id" element={<BookDetails />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
         <Route path="/checkout-success" element={<CheckoutSuccess />} />
-        <Route
+         <Route
           path="/profile"
           element={
             <ProtectedRoute>

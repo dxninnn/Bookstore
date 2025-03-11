@@ -6,7 +6,15 @@ import { useAuthStore } from '../store/authStore';
 import { useNavigate } from 'react-router-dom';
 
 export const Cart: React.FC = () => {
-  const { items, removeItem, updateQuantity, subtotal, shipping, tax, total, clearCart } = useCartStore();
+  // const { items, removeItem, updateQuantity, subtotal, shipping, tax, total, clearCart } = useCartStore();
+  const items = useCartStore((state) => state.items);
+  const removeItem = useCartStore((state) => state.removeItem);
+  const updateQuantity = useCartStore((state) => state.updateQuantity);
+  const subtotal = useCartStore((state) => state.subtotal);
+  const shipping = useCartStore((state) => state.shipping);
+  const tax = useCartStore((state) => state.tax);
+  const total = useCartStore((state) => state.total);
+  const clearCart = useCartStore((state) => state.clearCart);
   console.log(items)
   const { isAuthenticated } = useAuthStore();
   const [isProcessing, setIsProcessing] = useState(false);
