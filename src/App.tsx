@@ -51,28 +51,28 @@ interface HomePageProps {
 const HomePage: React.FC<HomePageProps> = ({ searchQuery }) => {
   const featuredBooks = [
     {
-      id: '1',
+      id: '76fbe6d1-4d63-4b7c-bad1-f0bfb689d8ce',
       cover: 'https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&q=80&w=800',
       title: 'The Silent Echo',
       author: 'Alexandra Rivers',
       price: '$24.99',
     },
     {
-      id: '2',
+      id: 'e7b4a1d2-3c98-4721-8f5b-0a4c7e3d6a9f',
       cover: 'https://images.unsplash.com/photo-1543002588-bfa74002ed7e?auto=format&fit=crop&q=80&w=800',
       title: 'Midnight Gardens',
       author: 'James Mitchell',
       price: '$19.99',
     },
     {
-      id: '3',
+      id: '3fa85f64-5717-4562-b3fc-2c963f66afa6',
       cover: 'https://images.unsplash.com/photo-1532012197267-da84d127e765?auto=format&fit=crop&q=80&w=800',
       title: 'The Lost Library',
       author: 'Sarah Chen',
       price: '$21.99',
     },
     {
-      id: '4',
+      id: '5a2d1f64-8717-4562-b3fc-2c963f66b8c5',
       cover: 'https://images.unsplash.com/photo-1589998059171-988d887df646?auto=format&fit=crop&q=80&w=800',
       title: 'Wanderlust',
       author: 'Michael Torres',
