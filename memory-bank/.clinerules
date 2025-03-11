@@ -1,0 +1,27 @@
+# Project Intelligence
+
+## Critical Implementation Paths
+
+- **Main Application:** `src/App.tsx`
+- **Components:** `src/components/`
+- **State Management:** `src/store/`
+
+## User Preferences and Workflow
+
+- (To be populated as I learn more about the user's preferences)
+
+## Project-Specific Patterns
+
+- (To be populated as I discover project-specific patterns)
+
+## Known Challenges
+
+- None at this time.
+
+## Evolution of Project Decisions
+
+- **Memory Bank Initialization:** Created core memory bank files (`projectbrief.md`, `productContext.md`, `activeContext.md`, `systemPatterns.md`, `techContext.md`, `progress.md`) and `.clinerules` to establish project context and track progress.
+- **Profile Management Page:** Created `Profile.tsx` component, added route to `App.tsx`, implemented authentication check, and updated `Navigation.tsx` to include a link to the profile page for logged-in users. Used temporary data file (`src/data/profile.json`) for profile information and order history.
+
+## Tool Usage Patterns
+- (To be populated)

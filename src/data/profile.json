@@ -1,0 +1,38 @@
+{
+  "user": {
+    "id": "1",
+    "name": "John Doe",
+    "email": "john.doe@example.com",
+    "profilePicture": "https://via.placeholder.com/150"
+  },
+  "orders": [
+    {
+      "id": "1",
+      "date": "2024-03-08",
+      "items": [
+        {
+          "id": "1",
+          "title": "The Silent Echo",
+          "author": "Alexandra Rivers",
+          "price": "$24.99",
+          "quantity": 1
+        }
+      ],
+      "total": "$24.99"
+    },
+    {
+      "id": "2",
+      "date": "2024-03-01",
+      "items": [
+        {
+          "id": "2",
+          "title": "Midnight Gardens",
+          "author": "James Mitchell",
+          "price": "$19.99",
+          "quantity": 2
+        }
+      ],
+      "total": "$39.98"
+    }
+  ]
+}
