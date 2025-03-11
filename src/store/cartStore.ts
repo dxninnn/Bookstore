@@ -55,7 +55,7 @@ export const useCartStore = create<CartStore>((set, get) => ({
   clearCart: () => set({ items: [] }),
   get subtotal() {
     return get().items.reduce(
-      (sum, item) => sum + (parseFloat(item.price.replace('$', '')) * item.quantity),
+      (sum, item) => sum + (parseFloat(item.price.replace(/[^0-9.]/g, '')) * item.quantity),
       0
     );
   },

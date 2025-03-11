@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 
 export const Cart: React.FC = () => {
   const { items, removeItem, updateQuantity, subtotal, shipping, tax, total, clearCart } = useCartStore();
+  console.log(items)
   const { isAuthenticated } = useAuthStore();
   const [isProcessing, setIsProcessing] = useState(false);
   const navigate = useNavigate();
