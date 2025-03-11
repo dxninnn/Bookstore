@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { BookOpen, Search, ShoppingCart, Sun, Moon, Menu, User, LogOut, User2 } from 'lucide-react';
 import { useCartStore } from '../store/cartStore';
@@ -7,17 +7,25 @@ import { useAuthStore } from '../store/authStore';
 interface NavigationProps {
   isDarkMode: boolean;
   setIsDarkMode: (value: boolean) => void;
+  setSearchQuery: (query: string) => void;
 }
 
-export const Navigation: React.FC<NavigationProps> = ({ isDarkMode, setIsDarkMode }) => {
+export const Navigation: React.FC<NavigationProps> = ({ isDarkMode, setIsDarkMode, setSearchQuery }) => {
   const cartItems = useCartStore((state) => state.items);
   const itemCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
   const { isAuthenticated, logout } = useAuthStore();
   const navigate = useNavigate();
+  const [searchInputValue, setSearchInputValue] = useState('');
 
   const handleLogout = () => {
     logout();
     navigate('/');
+  };
+
+  const handleSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const query = e.target.value;
+    setSearchInputValue(query);
+    setSearchQuery(query);
   };
 
   return (
@@ -31,9 +39,16 @@ export const Navigation: React.FC<NavigationProps> = ({ isDarkMode, setIsDarkMod
           </div>
           
           <div className="flex items-center space-x-6">
-            <button className="nav-link">
-              <Search className="h-5 w-5" />
-            </button>
+            <div className="relative">
+              <input
+                type="text"
+                placeholder="Search books..."
+                className="px-4 py-2 rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-600"
+                value={searchInputValue}
+                onChange={handleSearchInputChange}
+              />
+              <Search className="absolute top-1/2 right-3 -translate-y-1/2 h-5 w-5 text-gray-500" />
+            </div>
             <Link to="/cart" className="nav-link relative">
               <ShoppingCart className="h-5 w-5" />
               {itemCount > 0 && (

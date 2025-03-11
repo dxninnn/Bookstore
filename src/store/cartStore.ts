@@ -23,8 +23,9 @@ interface CartStore {
 
 export const useCartStore = create<CartStore>((set, get) => ({
   items: [],
-  addItem: (item) => {
+ addItem: (item) => {
     set((state) => {
+      console.log('Item being added:', item);
       const existingItem = state.items.find((i) => i.id === item.id);
       if (existingItem) {
         return {
@@ -33,12 +34,12 @@ export const useCartStore = create<CartStore>((set, get) => ({
           ),
         };
       }
-      return { items: [...state.items, { ...item, quantity: 1 }] };
+      return { items: [...state.items, { ...item, quantity: 1 }].map(item => ({...item})) };
     });
   },
   removeItem: (id) => {
     set((state) => ({
-      items: state.items.filter((item) => item.id !== id),
+      items: state.items.filter((item) => item.id !== id).map(item => ({...item})),
     }));
   },
   updateQuantity: (id, quantity) => {
@@ -49,13 +50,20 @@ export const useCartStore = create<CartStore>((set, get) => ({
     set((state) => ({
       items: state.items.map((item) =>
         item.id === id ? { ...item, quantity } : item
-      ),
+      ).map(item => ({...item})),
     }));
   },
   clearCart: () => set({ items: [] }),
   get subtotal() {
     return get().items.reduce(
-      (sum, item) => sum + (parseFloat(item.price.replace(/[^0-9.]/g, '')) * item.quantity),
+      (sum, item) => {
+        console.log('Original price:', item.price);
+        const priceWithoutCurrency = item.price.replace(/[^0-9.]/g, '');
+        console.log('Price without currency:', priceWithoutCurrency);
+        const numericPrice = parseFloat(priceWithoutCurrency);
+        console.log('Numeric price:', numericPrice);
+        return sum + (numericPrice * item.quantity);
+      },
       0
     );
   },
