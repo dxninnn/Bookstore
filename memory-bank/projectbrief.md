@@ -8,3 +8,44 @@ This application will cater to book lovers, authors, and publishers, ensuring a 
 
 
 **Goal:** Develop a web application for browsing and purchasing books online.
+
+-- Users table
+CREATE TABLE users (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  name VARCHAR(255) NOT NULL,
+  email VARCHAR(255) UNIQUE NOT NULL,
+  profile_picture VARCHAR(255)
+);
+
+-- Books table
+CREATE TABLE books (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  title VARCHAR(255) NOT NULL,
+  author VARCHAR(255) NOT NULL,
+  cover VARCHAR(255),
+  price NUMERIC NOT NULL
+);
+
+-- Orders table
+CREATE TABLE orders (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID REFERENCES users(id),
+  date DATE NOT NULL,
+  total NUMERIC NOT NULL
+);
+
+-- Order Items table
+CREATE TABLE order_items (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  order_id UUID REFERENCES orders(id),
+  book_id UUID REFERENCES books(id),
+  quantity INTEGER NOT NULL
+);
+
+-- Cart Items table
+CREATE TABLE cart_items (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID REFERENCES users(id),
+  book_id UUID REFERENCES books(id),
+  quantity INTEGER NOT NULL
+);

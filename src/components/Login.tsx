@@ -16,35 +16,7 @@ export const Login: React.FC = () => {
   const login = useAuthStore((state) => state.login);
   const [signUpEmail, setSignUpEmail] = useState('');
   const [signUpPassword, setSignUpPassword] = useState('');
-  const [showSignUpPassword, setShowSignUpPassword] = useState(false);
-
-  const handleSignInWithGoogle = async (e: React.MouseEvent) => {
-    e.preventDefault();
-    setError('');
-
-    try {
-      const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-      });
-
-      if (error) {
-        setError(error.message);
-        return;
-      }
-
-      // Simulate login
-      login(email);
-
-      // If coming from cart, redirect back to cart
-      if (location.state?.from === '/cart') {
-        navigate('/cart');
-      } else {
-        navigate('/');
-      }
-    } catch (err: any) {
-      setError(err.message);
-    }
-  };
+  const [showSignUpPassword, setShowSignUpPassword] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

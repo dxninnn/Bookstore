@@ -4,6 +4,7 @@ import { Minus, Plus, Trash2, CreditCard, Loader } from 'lucide-react';
 import { useCartStore } from '../store/cartStore';
 import { useAuthStore } from '../store/authStore';
 import { useNavigate } from 'react-router-dom';
+import { supabase } from '../utils/supabaseClient';
 
 export const Cart: React.FC = () => {
   // const { items, removeItem, updateQuantity, subtotal, shipping, tax, total, clearCart } = useCartStore();
@@ -19,6 +20,7 @@ export const Cart: React.FC = () => {
   const { isAuthenticated } = useAuthStore();
   const [isProcessing, setIsProcessing] = useState(false);
   const navigate = useNavigate();
+  const [error, setError] = useState('');
 
   const handleCheckout = async () => {
     if (!isAuthenticated) {
@@ -27,11 +29,68 @@ export const Cart: React.FC = () => {
     }
 
     setIsProcessing(true);
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    clearCart();
-    setIsProcessing(false);
-    navigate('/checkout-success');
+
+    try {
+      // Get user ID
+      const { data: { user } } = await supabase.auth.getUser();
+      const userId = user?.id;
+
+      if (!userId) {
+        console.error("User not found");
+        setError("User not found. Please log in again.");
+        setIsProcessing(false);
+        return;
+      }
+
+      // Insert order into the 'orders' table
+      const { data: orderData, error: orderError } = await supabase
+        .from('orders')
+        .insert([
+          {
+            user_id: userId,
+            date: new Date().toISOString(),
+            total: total,
+          },
+        ])
+        .select()
+
+      if (orderError) {
+        console.error("Error inserting order:", orderError);
+        setError("Failed to create order. Please try again.");
+        setIsProcessing(false);
+        return;
+      }
+
+      const orderId = orderData[0].id;
+
+      // Insert order items into the 'order_items' table
+      const orderItemsPromises = items.map(async (item) => {
+        const { error: orderItemError } = await supabase
+          .from('order_items')
+          .insert([
+            {
+              order_id: orderId,
+              book_id: item.id,
+              quantity: item.quantity,
+            },
+          ]);
+
+        if (orderItemError) {
+          console.error("Error inserting order item:", orderItemError);
+          throw new Error("Failed to create order item.");
+        }
+      });
+
+      await Promise.all(orderItemsPromises);
+
+      clearCart();
+      setIsProcessing(false);
+      navigate('/checkout-success');
+    } catch (error: any) {
+      console.error("Checkout error:", error);
+      setError("An error occurred during checkout. Please try again.");
+      setIsProcessing(false);
+    }
   };
 
   if (items.length === 0) {

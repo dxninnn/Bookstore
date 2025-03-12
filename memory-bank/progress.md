@@ -13,6 +13,11 @@
 - Added a name field to the signup form in `Signup.tsx` and bound it to the `name` state variable.
 - Removed the password verification check from the `handleSubmit` function in the `Login.tsx` component.
 - Removed the `confirmPassword` state variable from the `Login.tsx` component.
+- Removed Google Sign-in functionality.
+- Implemented the functionality to allow adding products to the cart without logging in, but require login before proceeding to checkout.
+- Implemented the logic to insert orders into the `orders` and `order_items` tables in Supabase.
+- Updated the `OrderItem` component in `src/components/Profile.tsx` to fetch and display the book name from the `books` table.
+- Reduced the bottom margin of the `h1` element in `src/components/Profile.tsx` to fix a display issue.
 
 **What's Left to Build:**
 - All application logic and UI components need to be implemented.
@@ -20,6 +25,12 @@
 **Current Status:**
 - Project initialization started. Memory bank initialized.
 - Profile management page created with temporary data.
+- Implemented separate login and signup pages.
+- Removed Google Sign-in functionality.
+- Implemented the functionality to allow adding products to the cart without logging in, but require login before proceeding to checkout.
+- Implemented the logic to insert orders into the `orders` and `order_items` tables in Supabase.
+- Updated the `OrderItem` component in `src/components/Profile.tsx` to fetch and display the book name from the `books` table.
+- Reduced the bottom margin of the `h1` element in `src/components/Profile.tsx` to fix a display issue.
 
 **Known Issues:**
 - None at this time.
